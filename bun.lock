@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "gum-katex",
+      "name": "gum.tex",
       "dependencies": {
         "gum-jsx": "link:gum-jsx",
         "react": "^19.1.0",

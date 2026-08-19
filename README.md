@@ -1,4 +1,4 @@
-# gum-katex
+# gum.tex
 
 Minimal LaTeX → SVG preview app built on [`gum-jsx`](https://github.com/CompendiumLabs/gum.jsx)'s
 `mathToSvg` (the `gum-jsx/math` entry). Vite + React + TypeScript, run with bun.

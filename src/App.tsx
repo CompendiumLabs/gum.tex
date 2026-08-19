@@ -35,7 +35,7 @@ export default function App() {
   return (
     <main>
       <header>
-        <h1>gum-katex</h1>
+        <h1>gum.tex</h1>
         <span className="sub">LaTeX → SVG via <code>gum-jsx/math</code></span>
       </header>
 
