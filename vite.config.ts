@@ -12,8 +12,11 @@ function chunkFor(id: string): string | undefined {
 }
 
 export default defineConfig({
+  // served from https://compendiumlabs.github.io/gum.tex/ via GitHub Pages
+  base: '/gum.tex/',
   plugins: [react()],
   build: {
+    outDir: 'docs',
     target: 'esnext',
     chunkSizeWarningLimit: 1000,
     rollupOptions: { output: { manualChunks: chunkFor } },

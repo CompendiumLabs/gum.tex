@@ -45,6 +45,9 @@ bun run build      # also prints a per-package size report
 The app is a textarea, an inline/display toggle, a font-size slider, the rendered SVG, and
 a collapsible view of the SVG source.
 
+Pushes to `master` are built and deployed to GitHub Pages by `.github/workflows/pages.yml`;
+`vite.config.ts` sets `base: '/gum.tex/'` to match the Pages URL prefix.
+
 ## Using `mathToSvg` yourself
 
 The app is deliberately thin so the interesting part is easy to lift out:
@@ -104,7 +107,7 @@ math layout only touches the KaTeX faces, so `loadMathFonts()` is all this app n
 | IBM Plex Sans/Mono × 3 weights (6 TTFs) |   ~1.06 MB  | no                                         |
 | Noto Emoji Variable                     |   ~1.99 MB  | no                                         |
 
-The IBM Plex / Noto files still appear in `dist/assets` because gum's `FONT_PATHS` imports
+The IBM Plex / Noto files still appear in `docs/assets` because gum's `FONT_PATHS` imports
 their URLs (that's what makes them available to `loadFonts()` on demand), but nothing
 requests them.
 
