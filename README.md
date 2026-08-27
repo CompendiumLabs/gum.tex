@@ -43,8 +43,8 @@ bun run build      # also prints a per-package size report
 > source directly, so no build step is needed on the gum side; `tsconfig.json` includes
 > their `src/types` folders for the ambient `opentype.js`/`linebreak`/`katex` declarations.
 
-The app is a textarea, an inline/display toggle, a font-size slider, the rendered SVG, and
-a collapsible view of the SVG source.
+The app is a textarea, an inline/display toggle, a font-size slider, the rendered SVG,
+copy / download buttons for it, and a collapsible view of the SVG source.
 
 Pushes to `master` are built and deployed to GitHub Pages by `.github/workflows/pages.yml`;
 `vite.config.ts` sets `base: '/gum.tex/'` to match the Pages URL prefix.

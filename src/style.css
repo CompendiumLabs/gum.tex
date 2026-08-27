@@ -39,6 +39,19 @@ textarea {
   overflow: auto;
 }
 .preview svg { max-width: 100%; height: auto; }
+summary { cursor: pointer; }
+.actions { display: inline-flex; gap: 0.4rem; margin-left: 0.75rem; vertical-align: middle; }
+.actions button {
+  font: inherit;
+  font-size: 0.8rem;
+  padding: 0.15rem 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: white;
+  color: inherit;
+  cursor: pointer;
+}
+.actions button:hover { background: #f0f0f0; }
 .muted { color: #999; }
 .error { color: #b00; white-space: pre-wrap; margin: 0; }
 .source {

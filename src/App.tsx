@@ -19,11 +19,37 @@ async function render(tex: string, inline: boolean, fontSize: number): Promise<R
   }
 }
 
+function downloadSvg(svg: string): void {
+  const url = URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml' }))
+  const a = document.createElement('a')
+  a.href = url
+  a.download = 'math.svg'
+  a.click()
+  URL.revokeObjectURL(url)
+}
+
 export default function App() {
   const [tex, setTex] = useState(DEFAULT_TEX)
   const [inline, setInline] = useState(false)
   const [fontSize, setFontSize] = useState(48)
   const [result, setResult] = useState<Result | null>(null)
+  const [copied, setCopied] = useState(false)
+
+  const svg = result != null && 'svg' in result ? result.svg : null
+
+  // the buttons live inside the <summary>; don't let their clicks toggle it
+  async function copySvg(e: React.MouseEvent) {
+    e.preventDefault()
+    if (svg == null) return
+    await navigator.clipboard.writeText(svg)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 1500)
+  }
+
+  function download(e: React.MouseEvent) {
+    e.preventDefault()
+    if (svg != null) downloadSvg(svg)
+  }
 
   useEffect(() => {
     let stale = false
@@ -68,10 +94,16 @@ export default function App() {
         )}
       </section>
 
-      {result != null && 'svg' in result && (
+      {svg != null && (
         <details>
-          <summary>SVG source ({result.svg.length.toLocaleString()} chars)</summary>
-          <pre className="source">{result.svg}</pre>
+          <summary>
+            SVG source ({svg.length.toLocaleString()} chars)
+            <span className="actions">
+              <button onClick={copySvg}>{copied ? 'copied!' : 'copy'}</button>
+              <button onClick={download}>download</button>
+            </span>
+          </summary>
+          <pre className="source">{svg}</pre>
         </details>
       )}
     </main>
