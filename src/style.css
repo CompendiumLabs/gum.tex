@@ -23,6 +23,7 @@ textarea {
   border: 1px solid #ccc;
   border-radius: 6px;
   resize: vertical;
+  outline: none;
 }
 .controls { display: flex; gap: 2rem; align-items: center; font-size: 0.9rem; }
 .controls label { display: flex; align-items: center; gap: 0.5rem; }

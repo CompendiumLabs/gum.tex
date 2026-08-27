@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { mathToSvg, loadMathFonts } from 'gum-jsx/math'
+import { mathToSvg } from '@gum-jsx/math'
 import { installFontFaces } from './fonts'
 
 const DEFAULT_TEX = String.raw`\int_0^\infty e^{-x^2} \, dx = \frac{\sqrt{\pi}}{2}`
@@ -15,7 +15,6 @@ function render(tex: string, inline: boolean, fontSize: number): Result {
 }
 
 export default function App() {
-  const [ready, setReady] = useState(false)
   const [tex, setTex] = useState(DEFAULT_TEX)
   const [inline, setInline] = useState(false)
   const [fontSize, setFontSize] = useState(48)
@@ -24,12 +23,11 @@ export default function App() {
   // and the browser needs @font-face rules to draw the glyphs the SVG names
   useEffect(() => {
     installFontFaces()
-    loadMathFonts().then(() => setReady(true))
   }, [])
 
   const result = useMemo(
-    () => (ready ? render(tex, inline, fontSize) : null),
-    [ready, tex, inline, fontSize]
+    () => render(tex, inline, fontSize),
+    [tex, inline, fontSize]
   )
 
   return (

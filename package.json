@@ -9,7 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "gum-jsx": "github:CompendiumLabs/gum.jsx#a713172",
+    "@gum-jsx/core": "link:@gum-jsx/core",
+    "@gum-jsx/math": "link:@gum-jsx/math",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   },
