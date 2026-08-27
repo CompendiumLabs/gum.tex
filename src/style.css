@@ -39,7 +39,6 @@ textarea {
   overflow: auto;
 }
 .preview svg { max-width: 100%; height: auto; }
-.muted { color: #999; }
 .error { color: #b00; white-space: pre-wrap; margin: 0; }
 .source {
   font-size: 11px;

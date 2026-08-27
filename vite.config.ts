@@ -7,7 +7,8 @@ function chunkFor(id: string): string | undefined {
   if (/node_modules\/(react|react-dom|scheduler)\//.test(id)) return 'react'
   if (/\/katex\//.test(id)) return 'katex'
   if (/\/opentype\.js\//.test(id)) return 'opentype'
-  if (/\/gum\.jsx\/src\//.test(id) || /\/gum-jsx\/src\//.test(id)) return 'gum'
+  // linked checkouts (gum-jsx-core/src) or npm installs (@gum-jsx/core/src)
+  if (/\/(gum-jsx-|@gum-jsx\/)\w+\/src\//.test(id)) return 'gum'
   if (/node_modules/.test(id)) return 'vendor'
 }
 

@@ -1,32 +1,18 @@
-// gum's SVG output references fonts by family name (KaTeX_Math, IBM Plex Sans,
-// ...). gum itself only needs the font *metrics* (via opentype.js) to lay out;
-// for the browser to actually draw the glyphs we also need @font-face rules.
-// FONT_PATHS already holds the vite-resolved asset URLs, so build them from it
-// (only for the math faces — that's all this app loads).
-import { FONT_PATHS, MATH_FONTS } from 'gum-jsx/fonts/fonts.ts'
+// gum's SVG output names fonts by css face (family + weight/style, see fontFace
+// in @gum-jsx/core). gum itself only needs the font *metrics* (via opentype.js)
+// to lay out; for the browser to draw the glyphs it must know the faces too.
+// loadMathFonts() has already fetched the bytes for metrics, so hand those same
+// bytes to the browser via the FontFace API rather than writing @font-face
+// rules with urls — no second request per font.
+import { FONT_DATA, fontFace } from '@gum-jsx/core/fonts'
+import { MATH_FONTS } from '@gum-jsx/math'
 
-const WEIGHTS: Record<string, number> = { light: 300, regular: 400, bold: 700 }
-
-function fontFaceCss(): string {
-  const rules: string[] = []
-  for (const family of MATH_FONTS) {
-    const path = FONT_PATHS[family]
-    if (typeof path === 'string') {
-      rules.push(`@font-face { font-family: "${family}"; src: url("${path}"); }`)
-    } else {
-      for (const [weight, url] of Object.entries(path)) {
-        rules.push(`@font-face { font-family: "${family}"; font-weight: ${WEIGHTS[weight]}; src: url("${url}"); }`)
-      }
-    }
-  }
-  return rules.join('\n')
-}
-
-let installed = false
+// call after loadMathFonts() has resolved
 export function installFontFaces(): void {
-  if (installed) return
-  installed = true
-  const style = document.createElement('style')
-  style.textContent = fontFaceCss()
-  document.head.appendChild(style)
+  for (const name of MATH_FONTS) {
+    const data = FONT_DATA[name]
+    if (!(data instanceof ArrayBuffer)) throw new Error(`math font not loaded: ${name}`)
+    const { family, weight = 400, style = 'normal' } = fontFace(name)
+    document.fonts.add(new FontFace(family, data, { weight: String(weight), style }))
+  }
 }

@@ -1,6 +1,5 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { mathToSvg } from '@gum-jsx/math'
-import { installFontFaces } from './fonts'
 
 const DEFAULT_TEX = String.raw`\int_0^\infty e^{-x^2} \, dx = \frac{\sqrt{\pi}}{2}`
 
@@ -19,12 +18,6 @@ export default function App() {
   const [inline, setInline] = useState(false)
   const [fontSize, setFontSize] = useState(48)
 
-  // gum needs the KaTeX font metrics (via opentype) before it can lay out math,
-  // and the browser needs @font-face rules to draw the glyphs the SVG names
-  useEffect(() => {
-    installFontFaces()
-  }, [])
-
   const result = useMemo(
     () => render(tex, inline, fontSize),
     [tex, inline, fontSize]
@@ -34,7 +27,7 @@ export default function App() {
     <main>
       <header>
         <h1>gum.tex</h1>
-        <span className="sub">LaTeX → SVG via <code>gum-jsx/math</code></span>
+        <span className="sub">LaTeX → SVG via <code>@gum-jsx/math</code></span>
       </header>
 
       <textarea
@@ -60,14 +53,13 @@ export default function App() {
       </div>
 
       <section className="preview">
-        {result == null && <span className="muted">loading fonts…</span>}
-        {result != null && 'error' in result && <pre className="error">{result.error}</pre>}
-        {result != null && 'svg' in result && (
+        {'error' in result && <pre className="error">{result.error}</pre>}
+        {'svg' in result && (
           <div dangerouslySetInnerHTML={{ __html: result.svg }} />
         )}
       </section>
 
-      {result != null && 'svg' in result && (
+      {'svg' in result && (
         <details>
           <summary>SVG source ({result.svg.length.toLocaleString()} chars)</summary>
           <pre className="source">{result.svg}</pre>

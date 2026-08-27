@@ -12,5 +12,5 @@
     "resolveJsonModule": true,
     "allowImportingTsExtensions": true
   },
-  "include": ["src", "node_modules/gum-jsx/src/types"]
+  "include": ["src", "node_modules/@gum-jsx/core/src/types", "node_modules/@gum-jsx/math/src/types"]
 }
