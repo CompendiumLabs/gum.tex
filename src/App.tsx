@@ -1,13 +1,19 @@
-import { useMemo, useState } from 'react'
-import { mathToSvg } from '@gum-jsx/math'
+import { useEffect, useState } from 'react'
+import { mathToSvgAsync } from '@gum-jsx/math'
+import { installFontFaces } from './fonts'
 
 const DEFAULT_TEX = String.raw`\int_0^\infty e^{-x^2} \, dx = \frac{\sqrt{\pi}}{2}`
 
 type Result = { svg: string } | { error: string }
 
-function render(tex: string, inline: boolean, fontSize: number): Result {
+// mathToSvgAsync fetches the base KaTeX faces on first use and the extra ones
+// (\mathbf, \mathcal, ...) only when the math asks for them; after each render
+// hand any newly fetched faces to the browser so the glyphs draw
+async function render(tex: string, inline: boolean, fontSize: number): Promise<Result> {
   try {
-    return { svg: mathToSvg(tex, { inline, font_size: fontSize }) }
+    const svg = await mathToSvgAsync(tex, { inline, font_size: fontSize })
+    installFontFaces()
+    return { svg }
   } catch (e) {
     return { error: e instanceof Error ? e.message : String(e) }
   }
@@ -17,11 +23,13 @@ export default function App() {
   const [tex, setTex] = useState(DEFAULT_TEX)
   const [inline, setInline] = useState(false)
   const [fontSize, setFontSize] = useState(48)
+  const [result, setResult] = useState<Result | null>(null)
 
-  const result = useMemo(
-    () => render(tex, inline, fontSize),
-    [tex, inline, fontSize]
-  )
+  useEffect(() => {
+    let stale = false
+    render(tex, inline, fontSize).then(r => { if (!stale) setResult(r) })
+    return () => { stale = true }
+  }, [tex, inline, fontSize])
 
   return (
     <main>
@@ -53,13 +61,14 @@ export default function App() {
       </div>
 
       <section className="preview">
-        {'error' in result && <pre className="error">{result.error}</pre>}
-        {'svg' in result && (
+        {result == null && <span className="muted">loading fonts…</span>}
+        {result != null && 'error' in result && <pre className="error">{result.error}</pre>}
+        {result != null && 'svg' in result && (
           <div dangerouslySetInnerHTML={{ __html: result.svg }} />
         )}
       </section>
 
-      {'svg' in result && (
+      {result != null && 'svg' in result && (
         <details>
           <summary>SVG source ({result.svg.length.toLocaleString()} chars)</summary>
           <pre className="source">{result.svg}</pre>

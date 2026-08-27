@@ -23,7 +23,8 @@ SVG graphics, exporting to images, composing with other vector content).
 
 `@gum-jsx/math` sits in between: it uses KaTeX's parser to understand the TeX, then lays
 out the glyphs itself using metrics read from the KaTeX fonts, and emits plain SVG. The
-whole pipeline is **~555 kB of JS (~167 kB gzipped) plus ~480 kB of fonts** — see the
+whole pipeline is **~555 kB of JS (~167 kB gzipped) plus ~190 kB of fonts** for ordinary
+math (~480 kB if a formula uses `\mathbf`, `\mathcal`, … ) — see the
 [size breakdown](#bundle-size-breakdown) below.
 
 ## Running it
@@ -53,33 +54,37 @@ Pushes to `master` are built and deployed to GitHub Pages by `.github/workflows/
 The app is deliberately thin so the interesting part is easy to lift out:
 
 ```ts
-import { mathToSvg, loadMathFonts } from '@gum-jsx/math'
+import { mathToSvgAsync } from '@gum-jsx/math'
 
-await loadMathFonts()                 // fetch the KaTeX TTFs (needed for glyph metrics)
-const svg = mathToSvg(String.raw`\frac{a}{b}`, { inline: false, font_size: 48 })
+// fetches the KaTeX TTFs it needs (for glyph metrics) on first use
+const svg = await mathToSvgAsync(String.raw`\frac{a}{b}`, { inline: false, font_size: 48 })
 container.innerHTML = svg
 ```
 
 Two things to know:
 
 - **Layout needs font metrics.** gum uses [opentype.js](https://opentype.js.org) to read
-  advances and bounding boxes from the KaTeX fonts, so `loadMathFonts()` must resolve
-  before the first `mathToSvg` call. Only the 18 math faces are fetched; gum's text and
-  emoji fonts (registered by `@gum-jsx/core`, ~3 MB) are left alone — don't call the
-  no-argument `loadFonts()`, which loads everything registered.
+  advances and bounding boxes from the KaTeX fonts, so they must be fetched before layout.
+  `mathToSvgAsync` loads the 7 base faces (~190 kB) and, if the math sets a face that isn't
+  loaded yet (`\mathbf`, `\mathcal`, `\mathfrak`, …), fetches the other 11 (~290 kB) in one
+  go and lays out again. The sync `mathToSvg` is for after an explicit `await loadMathFonts()`
+  (all 18). Only the math faces are ever touched; gum's text and emoji fonts (registered by
+  `@gum-jsx/core`, ~3 MB) are left alone — don't call the no-argument `loadFonts()`, which
+  loads everything registered.
 - **Drawing needs the faces too.** The SVG names fonts the way CSS does: a family plus
   weight/style (`KaTeX_Main`, `KaTeX_Main` + `font-weight="700"` for `\mathbf`,
   `KaTeX_Caligraphic`, …; the mapping is `fontFace()` in `@gum-jsx/core/fonts`). The
   browser won't know those faces unless you tell it. `src/fonts.ts` registers them with the
   `FontFace` API straight from the bytes gum already fetched for metrics (`FONT_DATA`), so
-  drawing costs no second request per font. Without this step you get system-serif
-  fallback glyphs (and faux-bold for `\mathbf`).
+  drawing costs no second request per font; it runs after every render and registers
+  whatever faces are new. Without this step you get system-serif fallback glyphs (and
+  faux-bold for `\mathbf`).
 
 ## How the app is wired
 
-- `src/main.tsx` — `await loadMathFonts()`, then `installFontFaces()`, then mount React.
-- `src/App.tsx` — textarea → `mathToSvg(tex, { inline, font_size })` → `dangerouslySetInnerHTML`.
-- `src/fonts.ts` — registers the math faces with the browser as described above.
+- `src/App.tsx` — textarea → `mathToSvgAsync(tex, { inline, font_size })` → `installFontFaces()`
+  → `dangerouslySetInnerHTML`, in an effect (stale results from superseded input are dropped).
+- `src/fonts.ts` — registers newly fetched math faces with the browser as described above.
 - `vite.config.ts` — `manualChunks` splits the bundle by origin (react / gum / katex /
   opentype / vendor) so the build output doubles as a size breakdown.
 
@@ -106,8 +111,8 @@ math layout only touches the KaTeX faces, so `loadMathFonts()` is all this app n
 
 | fonts                                                              | size        | fetched?                                |
 |--------------------------------------------------------------------|------------:|-----------------------------------------|
-| KaTeX Math, Main, AMS, Size1–4 (7 TTFs)                            |   ~190 kB   | yes — `loadMathFonts()` + `FontFace`    |
-| KaTeX Main Bold/Italic/BoldItalic, Math BoldItalic, Caligraphic, Fraktur, Script, SansSerif ×3, Typewriter (11 TTFs) | ~290 kB | yes — same |
+| KaTeX Math, Main, AMS, Size1–4 (7 TTFs, `MATH_BASE_FONTS`)         |   ~190 kB   | yes — on first render                   |
+| KaTeX Main Bold/Italic/BoldItalic, Math BoldItalic, Caligraphic, Fraktur, Script, SansSerif ×3, Typewriter (11 TTFs, `MATH_EXTRA_FONTS`) | ~290 kB | only if a formula uses a font command |
 | IBM Plex Sans/Mono × 3 weights (6 TTFs)                            |   ~1.06 MB  | no                                      |
 | Noto Emoji Variable                                                |   ~1.99 MB  | no                                      |
 
@@ -118,11 +123,12 @@ them available to `loadFonts()` on demand), but nothing requests them.
 
 ### Total and comparison
 
-**~555 kB JS (~167 kB gzip) + ~480 kB fonts** for a browser LaTeX→SVG pipeline.
+**~555 kB JS (~167 kB gzip) + ~190 kB fonts** (~480 kB with the extra faces) for a browser
+LaTeX→SVG pipeline.
 
 - **vs. KaTeX:** KaTeX's own browser bundle is ~270 kB min / ~75 kB gzip of JS plus ~70 kB
-  of woff2 fonts for a typical page. gum is roughly 2–2.5× on JS and ~7× on fonts (all 18
-  KaTeX faces as TTF, vs. a subset as woff2) — the price of getting SVG rather than HTML/CSS.
+  of woff2 fonts for a typical page. gum is roughly 2–2.5× on JS and ~2.5× on fonts (TTF
+  rather than woff2) — the price of getting SVG rather than HTML/CSS.
 - **vs. MathJax:** MathJax 3.2.2's `tex-svg.js` is **2,108 kB min / 678 kB gzip**
   (`tex-svg-full.js`: 2,275 kB / 716 kB). That bundle embeds the glyph outlines, so
   there are no separate font files — but it's still ~4× gum's JS and ~2× its JS+fonts
@@ -140,10 +146,7 @@ them available to `loadFonts()` on demand), but nothing requests them.
   tables (advance, ink bounds, italic correction per glyph) would remove it entirely and
   also remove the need to fetch the TTFs for layout at all — leaving fonts purely a display
   concern (`@font-face`, where woff2 would cut ~190 kB to ~70 kB).
-- **fonts (~480 kB)** are the biggest single item now. `@gum-jsx/math` starts fetching all
-  18 faces on import, so the app can't defer the 11 extended ones (`\mathbf`, `\mathcal`,
-  `\mathfrak`, … ≈ 290 kB) even though most formulas only touch the base 7 (~190 kB). If the
-  package left that to the host, the app could load the base set up front and fetch the
-  rest on demand (gum throws a catchable `Font not loaded` error). Subsetting to the glyphs
-  the symbol table references would help too, but the metrics-table route above is the
-  bigger win.
+- **fonts (~190 kB base)** are already loaded on demand: the 11 extra faces (~290 kB) cost
+  nothing until a formula uses a font command, and then one extra round trip. Subsetting
+  the base faces to the glyphs the symbol table references would help too, but the
+  metrics-table route above is the bigger win.
