@@ -9,8 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@gum-jsx/core": "link:@gum-jsx/core",
-    "@gum-jsx/math": "link:@gum-jsx/math",
+    "@gum-jsx/core": "^1.7.0",
+    "@gum-jsx/math": "^1.7.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   },
