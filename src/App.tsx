@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { mathToSvgAsync } from '@gum-jsx/math'
-import { installFontFaces } from './fonts'
+import { installFontFaces, downloadSvg } from '@gum-jsx/web'
 
 const DEFAULT_TEX = String.raw`\int_0^\infty e^{-x^2} \, dx = \frac{\sqrt{\pi}}{2}`
 
@@ -8,7 +8,7 @@ type Result = { svg: string } | { error: string }
 
 // mathToSvgAsync fetches the base KaTeX faces on first use and the extra ones
 // (\mathbf, \mathcal, ...) only when the math asks for them; after each render
-// hand any newly fetched faces to the browser so the glyphs draw
+// @gum-jsx/web hands any newly fetched faces to the browser so the glyphs draw
 async function render(tex: string, inline: boolean, fontSize: number): Promise<Result> {
   try {
     const svg = await mathToSvgAsync(tex, { inline, font_size: fontSize })
@@ -17,15 +17,6 @@ async function render(tex: string, inline: boolean, fontSize: number): Promise<R
   } catch (e) {
     return { error: e instanceof Error ? e.message : String(e) }
   }
-}
-
-function downloadSvg(svg: string): void {
-  const url = URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml' }))
-  const a = document.createElement('a')
-  a.href = url
-  a.download = 'math.svg'
-  a.click()
-  URL.revokeObjectURL(url)
 }
 
 export default function App() {
@@ -48,7 +39,7 @@ export default function App() {
 
   function download(e: React.MouseEvent) {
     e.preventDefault()
-    if (svg != null) downloadSvg(svg)
+    if (svg != null) downloadSvg('math.svg', svg)
   }
 
   useEffect(() => {

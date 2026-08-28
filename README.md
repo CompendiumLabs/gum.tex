@@ -37,11 +37,12 @@ bun run dev        # http://localhost:5173
 bun run build      # also prints a per-package size report
 ```
 
-> gum is split into packages: `@gum-jsx/core` (elements, layout, fonts) and
-> `@gum-jsx/math` (the LaTeX pipeline and the KaTeX faces). `package.json` pulls both in
-> as `link:` deps (run `bun link` in each checkout first). Vite consumes their TypeScript
-> source directly, so no build step is needed on the gum side; `tsconfig.json` includes
-> their `src/types` folders for the ambient `opentype.js`/`linebreak`/`katex` declarations.
+> gum is split into packages: `@gum-jsx/core` (elements, layout, fonts), `@gum-jsx/math`
+> (the LaTeX pipeline and the KaTeX faces) and `@gum-jsx/web` (the browser runtime: installing
+> the fetched faces through the `FontFace` API, downloads). `package.json` pulls them in as
+> deps (`web` as a `link:` to the local checkout until it is published). Vite consumes their TypeScript source directly, so no build step is needed on
+> the gum side; `tsconfig.json` includes their `src/types` folders for the ambient
+> `opentype.js`/`linebreak`/`katex` declarations.
 
 The app is a textarea, an inline/display toggle, a font-size slider, the rendered SVG,
 copy / download buttons for it, and a collapsible view of the SVG source.
