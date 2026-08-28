@@ -3,7 +3,7 @@
 **LaTeX → SVG in the browser, without MathJax.**
 
 gum.tex is a small live-preview app for the math renderer in
-[`gum.jsx`](https://github.com/CompendiumLabs/gum.jsx). Type LaTeX, get back a standalone
+[`gum.jsx`](https://github.com/CompendiumLabs/gum-jsx). Type LaTeX, get back a standalone
 `<svg>` — real vector paths positioned by real font metrics — using only the
 [KaTeX](https://katex.org) parser and gum's own layout engine. No MathJax, no
 HTML/CSS soup, no multi-megabyte bundle.
