@@ -68,8 +68,8 @@ Two things to know:
   `mathToSvgAsync` loads the 7 base faces (~190 kB) and, if the math sets a face that isn't
   loaded yet (`\mathbf`, `\mathcal`, `\mathfrak`, …), fetches the other 11 (~290 kB) in one
   go and lays out again. The sync `mathToSvg` is for after an explicit `await loadMathFonts()`
-  (all 18). Only the math faces are ever touched; gum's text and emoji fonts (registered by
-  `@gum-jsx/core`, ~3 MB) are left alone — don't call the no-argument `loadFonts()`, which
+  (all 18). Only the math faces are ever touched; gum's text fonts (registered by
+  `@gum-jsx/core`, ~1 MB) are left alone — don't call the no-argument `loadFonts()`, which
   loads everything registered.
 - **Drawing needs the faces too.** The SVG names fonts the way CSS does: a family plus
   weight/style (`KaTeX_Main`, `KaTeX_Main` + `font-weight="700"` for `\mathbf`,
@@ -114,12 +114,12 @@ math layout only touches the KaTeX faces, so `loadMathFonts()` is all this app n
 | KaTeX Math, Main, AMS, Size1–4 (7 TTFs, `MATH_BASE_FONTS`)         |   ~190 kB   | yes — on first render                   |
 | KaTeX Main Bold/Italic/BoldItalic, Math BoldItalic, Caligraphic, Fraktur, Script, SansSerif ×3, Typewriter (11 TTFs, `MATH_EXTRA_FONTS`) | ~290 kB | only if a formula uses a font command |
 | IBM Plex Sans/Mono × 3 weights (6 TTFs)                            |   ~1.06 MB  | no                                      |
-| Noto Emoji Variable                                                |   ~1.99 MB  | no                                      |
 
 Each math TTF is fetched exactly once: gum reads it for metrics and `src/fonts.ts` hands
-the same bytes to the browser for drawing. The IBM Plex / Noto files still appear in
-`docs/assets` because `@gum-jsx/core` imports their URLs at module level (that's what makes
-them available to `loadFonts()` on demand), but nothing requests them.
+the same bytes to the browser for drawing. The IBM Plex files still appear in `docs/assets`
+because `@gum-jsx/core` imports their URLs at module level (that's what makes them available
+to `loadFonts()` on demand), but nothing requests them. (gum no longer bundles an emoji font
+at all: emoji are measured with a fixed advance and drawn by the system's emoji face.)
 
 ### Total and comparison
 
