@@ -5,9 +5,9 @@
     "": {
       "name": "gum.tex",
       "dependencies": {
-        "@gum-jsx/core": "^1.7.1",
-        "@gum-jsx/math": "^1.7.1",
-        "@gum-jsx/web": "^1.7.0",
+        "@gum-jsx/core": "^1.8.0",
+        "@gum-jsx/math": "^1.8.0",
+        "@gum-jsx/web": "^1.8.0",
         "react": "^19.1.0",
         "react-dom": "^19.1.0",
       },
@@ -111,11 +111,11 @@
 
     "@esbuild/win32-x64": ["@esbuild/win32-x64@0.28.2", "", { "os": "win32", "cpu": "x64" }, "sha512-5ebpxr3nWMzrL/rnUI755Jkuee0bHL/Gq0WTF9lvcpv73wAp5eu8MfBUgWK9bhWvZjj7yX8etf/8tI8Ney695g=="],
 
-    "@gum-jsx/core": ["@gum-jsx/core@1.7.1", "", { "dependencies": { "@types/papaparse": "^5.5.2", "acorn": "^8.15.0", "acorn-jsx": "^5.3.2", "emojibase-regex": "^17.0.0", "linebreak": "^1.1.0", "opentype.js": "^1.3.4", "papaparse": "^5.5.3" } }, "sha512-n59C6cUbgzAxewfIQDjw6SQXBv0pJ4i0VhhOCen7sVoQ8mxFK4NunCa6P+4pMTwLHuOhAPD02q3LT6XFQUYLxw=="],
+    "@gum-jsx/core": ["@gum-jsx/core@1.8.0", "", { "dependencies": { "@types/papaparse": "^5.5.2", "acorn": "^8.15.0", "acorn-jsx": "^5.3.2", "emojibase-regex": "^17.0.0", "linebreak": "^1.1.0", "opentype.js": "^1.3.4", "papaparse": "^5.5.3" } }, "sha512-bxbdQvuGWD8IjiXUqTqmw/PbVnccv1twCqcxgjbu1hDi78M6rvyDmc/Lu18wV3TCsVGMth9aYd4PaNkE8JfsMA=="],
 
-    "@gum-jsx/math": ["@gum-jsx/math@1.7.1", "", { "dependencies": { "katex": "^0.16.33" }, "peerDependencies": { "@gum-jsx/core": "^1.7.0" } }, "sha512-MYlRTVQvxqvA0A6jndVAqe3nFk+8x5tM5kv1gkl34PgUQbtMninIhOPP72DJEqPyRBEH2H+spB4PS0lhq7WXgw=="],
+    "@gum-jsx/math": ["@gum-jsx/math@1.8.0", "", { "dependencies": { "katex": "^0.16.33" }, "peerDependencies": { "@gum-jsx/core": "^1.8.0" } }, "sha512-E49LEfJWfY9AlIu/ZbPfyemjFn4pudod1N+7EqFuLK2WkszQAw4rcppTYnnKPizcKt8JCDjshEQtChSvuMmdLA=="],
 
-    "@gum-jsx/web": ["@gum-jsx/web@1.7.0", "", { "peerDependencies": { "@gum-jsx/core": "^1.7.0" } }, "sha512-fvBcWeIFnyoB0PFibCjU8QUovFZzxl4S/ULIGFigQfL0jqjm1atGdtTu0F3rPYoioXeWwq2IzZRGXJJlxA3FgA=="],
+    "@gum-jsx/web": ["@gum-jsx/web@1.8.0", "", { "peerDependencies": { "@gum-jsx/core": "^1.8.0" } }, "sha512-+Nu/RMYBov3zX9ieiZrXEpljVcF5hhBlbdc8GxHhg8vRR1b77uW8JN27pYQufdFhHpRK1qfKU6re+x55bBP0Lg=="],
 
     "@jridgewell/gen-mapping": ["@jridgewell/gen-mapping@0.3.13", "", { "dependencies": { "@jridgewell/sourcemap-codec": "^1.5.0", "@jridgewell/trace-mapping": "^0.3.24" } }, "sha512-2kkt/7niJ6MgEPxF0bYdQ6etZaA+fQvDcLKckhy1yIQOzaoKjBBjSj63/aLVjYE3qhRt5dvM+uUyfCg6UKCBbA=="],
 
