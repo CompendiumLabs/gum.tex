@@ -53,6 +53,7 @@ export default function App() {
       <header>
         <h1>gum.tex</h1>
         <span className="sub">LaTeX → SVG via <code>@gum-jsx/math</code></span>
+        <a className="repo" href="https://github.com/CompendiumLabs/gum.tex">GitHub ↗</a>
       </header>
 
       <textarea
