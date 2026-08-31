@@ -2,6 +2,8 @@
 
 **LaTeX → SVG in the browser, without MathJax.**
 
+**Try it live: [compendiumlabs.ai/gum.tex](https://compendiumlabs.ai/gum.tex/)**
+
 gum.tex is a small live-preview app for the math renderer in
 [`gum.jsx`](https://github.com/CompendiumLabs/gum-jsx). Type LaTeX, get back a standalone
 `<svg>` — real vector paths positioned by real font metrics — using only the
@@ -46,9 +48,6 @@ bun run build      # also prints a per-package size report
 
 The app is a textarea, an inline/display toggle, a font-size slider, the rendered SVG,
 copy / download buttons for it, and a collapsible view of the SVG source.
-
-Pushes to `master` are built and deployed to GitHub Pages by `.github/workflows/pages.yml`;
-`vite.config.ts` sets `base: '/gum.tex/'` to match the Pages URL prefix.
 
 ## Using `mathToSvg` yourself
 
