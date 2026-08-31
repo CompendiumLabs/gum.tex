@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@gum-jsx/core": "^1.8.0",
-    "@gum-jsx/math": "^1.8.0",
+    "@gum-jsx/math": "^1.8.2",
     "@gum-jsx/web": "^1.8.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
